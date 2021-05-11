@@ -64,7 +64,7 @@ public:
      * 
      * @return the value at location [i][j][k]
      */
-    //float operator()(int i, int j, int k) const;
+    float operator()(int i, int j, int k) const;
 
     /**
      * Operator overloading ()

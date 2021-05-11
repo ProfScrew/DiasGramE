@@ -63,16 +63,14 @@ Tensor::Tensor(int r, int c, int d, float v){
         std::cout << data[i];
     }
     */
-    this->r = r;
+    this->r=r;
     this->c=c;
     this->d=d;
-    
-    int i, j;
     matrix = new float**[r];
 
-    for(i = 0; i<c; i++){
+    for(int i = 0; i<c; i++){
         matrix[i] = new float*[c];
-        for(j = 0; j<d; j++){
+        for(int j = 0; j<d; j++){
             matrix[i][j] = new float[d];
         }
     }
@@ -107,3 +105,17 @@ Tensor::~Tensor(){
 
     delete[] matrix;
 }
+
+/*
+float Tensor::operator()(int i, int j, int k) const{
+    
+    if(i > this->r || i < 0 || j > this->c || j < 0 || k > this->d || k < 0){
+        //throw index_out_of_bound();
+        return 0;
+    }else{
+        return matrix[i][j][k];
+    }
+    
+}
+
+*/
