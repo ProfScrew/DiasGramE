@@ -76,7 +76,7 @@ public:
      * 
      * @return the pointer to the location [i][j][k]
      */
-    //float &operator()(int i, int j, int k);
+    float &operator()(int i, int j, int k);
 
     /**
      * Copy constructor
@@ -85,7 +85,7 @@ public:
      *      
      * @return the new Tensor
      */
-    //Tensor(const Tensor& that);
+    Tensor(const Tensor& that);
 
 
     /**
@@ -99,7 +99,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
      */
-    //Tensor operator-(const Tensor &rhs);
+    Tensor operator-(const Tensor &rhs);
     
      /**
      * Operator overloading +
@@ -433,7 +433,9 @@ public:
      * 
      */
     //void write_file(string filename);
+    
 
+    void stampa_Tensor();
 };
 
 #endif
