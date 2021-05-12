@@ -40,8 +40,7 @@ using namespace std;
         throw(tensor_not_initialized());
     }
 }*/
-Tensor::Tensor(){
-    r = c = d = 0;
+Tensor::Tensor(): r{0}, c{0}, d{0} {
 }
 
 /*
@@ -50,53 +49,28 @@ Generalizing further, given start address (say base) of an array of size [l x b 
 data = *(base + a * (b x h) + b * (h) + c); // Note that we haven’t used the higher dimension l.
 */
 Tensor::Tensor(int r, int c, int d, float v){
-    /*
-    data = new float[r*c*d];
-    this->r=r;
     
-
-
-
-
-    for(int i; i<(r*c*d); i++){
-        data[i] = v;
-        std::cout << data[i];
-    }
-    */
     this->r=r;
     this->c=c;
     this->d=d;
     matrix = new float**[r];
 
-    for(int i = 0; i<c; i++){
+    for(int i = 0; i < r; i++){
         matrix[i] = new float*[c];
-        for(int j = 0; j<d; j++){
+        for(int j = 0; j < c; j++){
             matrix[i][j] = new float[d];
+            for(int k = 0; k < d; k++ ) {
+                matrix[i][j][k] = v;
+            }
         }
-    }
-
-    /*
-
-    float** matrix = new float*[r];
-
-        for (int i = 0; i < c; i++)
- 
-            matrix[i] = new float[c];
-        
-        
-
-        for (int i = 1; i < c; i++)  //Questo ciclo serve per mettere a posto i puntatori
-            matrix[i] = matrix[0] + i*c;
-
-    */  
+    }  
 }
 
 
 Tensor::~Tensor(){
-    int i, j;
 
-    for(i = 0; i<c; i++){
-        for(j = 0; j<d; j++){
+    for(int i = 0; i<c; i++){
+        for(int j = 0; j<d; j++){
             delete[] matrix[i][j];
         }
         delete[] matrix[i];
@@ -106,16 +80,68 @@ Tensor::~Tensor(){
     delete[] matrix;
 }
 
-/*
 float Tensor::operator()(int i, int j, int k) const{
     
-    if(i > this->r || i < 0 || j > this->c || j < 0 || k > this->d || k < 0){
-        //throw index_out_of_bound();
-        return 0;
+    if(i >= this->r || i < 0 || j >= this->c || j < 0 || k >= this->d || k < 0){
+        throw index_out_of_bound();
     }else{
         return matrix[i][j][k];
-    }
-    
+    }  
 }
 
-*/
+float& Tensor::operator()(int i, int j, int k){
+    if(i >= this->r || i < 0 || j >= this->c || j < 0 || k >= this->d || k < 0){
+        throw index_out_of_bound();
+    }else{
+        return this->matrix[i][j][k];
+    }
+}
+
+
+Tensor::Tensor(const Tensor& that){
+    this->r = that.r;
+    this->c = that.c;
+    this->d = that.d;
+
+    matrix = new float**[r];
+
+    for(int i = 0; i < r; i++){
+        matrix[i] = new float*[c];
+        for(int j = 0; j < c; j++){
+            matrix[i][j] = new float[d];
+            for(int k = 0; k < d; k++) {
+                matrix[i][j][k] = that.matrix[i][j][k];
+            }
+        }
+    }
+}
+
+void Tensor::stampa_Tensor(){
+    
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            for(int k=0;k<d;k++){
+                cout<<matrix[i][j][k];
+                cout << ":";
+            }
+            cout << "|";
+        }
+        cout << endl;
+    }
+}
+
+Tensor Tensor::operator-(const Tensor &rhs) {
+    if(r == rhs.r && c == rhs.c && d == rhs.d){
+        Tensor res{r,c,d,0};
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                for(int k=0;k<d;k++){
+                    res.matrix[i][j][k] = this->matrix[i][j][k] - rhs.matrix[i][j][k];
+                }
+            }
+        }
+        return res;
+    }else{
+        throw dimension_mismatch();
+    }
+}
