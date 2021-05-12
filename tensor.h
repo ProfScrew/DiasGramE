@@ -20,7 +20,7 @@ class Tensor
 {
 private:
     float ***matrix = nullptr;
-    float * data = nullptr; //<-- you are free to change this data structure (don't use vectors)
+    //float * data = nullptr; <-- you are free to change this data structure (don't use vectors)
 
     int r = 0;  // number of rows
     int c = 0;  // number of columns
@@ -112,7 +112,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
     */
-    //Tensor operator +(const Tensor &rhs);
+    Tensor operator +(const Tensor &rhs);
 
     /**
      * Operator overloading *
@@ -125,7 +125,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
      */
-    //Tensor operator*(const Tensor &rhs);
+    Tensor operator*(const Tensor &rhs);
     
     /**
      * Operator overloading /
@@ -138,7 +138,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
      */
-    //Tensor operator/(const Tensor &rhs);
+    Tensor operator/(const Tensor &rhs);
 
     /**
      * Operator overloading - 
@@ -149,7 +149,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
      */
-    //Tensor operator-(const float &rhs);
+    Tensor operator-(const float &rhs);
 
     /**
      * Operator overloading +
@@ -160,7 +160,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
      */
-    //Tensor operator+(const float &rhs);
+    Tensor operator+(const float &rhs);
 
     /**
      * Operator overloading *
@@ -171,7 +171,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
      */
-    //Tensor operator*(const float &rhs);
+    Tensor operator*(const float &rhs);
 
     /**
      * Operator overloading / between a Tensor and a constant
@@ -182,7 +182,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
      */
-    //Tensor operator/(const float &rhs);
+    Tensor operator/(const float &rhs);
 
     /**
      * Operator overloading = (assignment) 
@@ -191,7 +191,7 @@ public:
      * 
      * @return a reference to the receiver object
      */
-    //Tensor & operator=(const Tensor &other);
+    Tensor & operator=(const Tensor &other);
 
     /**
      * Random Initialization
@@ -201,7 +201,7 @@ public:
      * @param mean The mean
      * @param std  Standard deviation
      */
-    //void init_random(float mean=0.0, float std=1.0);
+    void init_random(float mean=0.0, float std=1.0);
 
     /**
      * Constant Initialization
@@ -213,7 +213,7 @@ public:
      * @param d The depth
      * @param v The initialization value
      */
-    //void init(int r, int c, int d, float v=0.0);
+    void init(int r, int c, int d, float v=0.0);
 
     /**
      * Tensor Clamp
@@ -223,7 +223,7 @@ public:
      * @param low Lower value
      * @param high Higher value 
      */
-    //void clamp(float low, float high);
+    void clamp(float low, float high);
 
     /**
      * Tensor Rescaling
@@ -238,7 +238,7 @@ public:
      * 
      * @param new_max New maximum vale
      */
-    //void rescale(float new_max=1.0);
+    void rescale(float new_max=1.0);
 
     /**
      * Tensor padding
@@ -251,7 +251,7 @@ public:
      * @param pad_w the width padding
      * @return the padded tensor
      */
-    //Tensor padding(int pad_h, int pad_w);
+    Tensor padding(int pad_h, int pad_w);
 
     /**
      * Subset a tensor
@@ -271,7 +271,7 @@ public:
      * @param depth_end
      * @return the subset of the original tensor
      */
-    //Tensor subset(unsigned int row_start, unsigned int row_end, unsigned int col_start, unsigned int col_end, unsigned int depth_start, unsigned int depth_end);
+    Tensor subset(unsigned int row_start, unsigned int row_end, unsigned int col_start, unsigned int col_end, unsigned int depth_start, unsigned int depth_end);
 
     /** 
      * Concatenate 
@@ -292,7 +292,7 @@ public:
      * @param axis The axis along which perform the concatenation 
      * @return a new Tensor containing the result of the concatenation
      */
-    //Tensor concat(const Tensor &rhs, int axis=0);
+    Tensor concat(const Tensor &rhs, int axis=0);
 
 
     /** 
@@ -307,30 +307,36 @@ public:
      * @param f The filter
      * @return a new Tensor containing the result of the convolution
      */
-    //Tensor convolve(const Tensor &f);
+    Tensor convolve(const Tensor &f);
 
     /* UTILITY */
+    /*
+     * This method creates a data structure which contains the tensor
+     *
+     * @return data_tensor
+     */ 
+    float*** get_matrix(int i, int j, int k, float v = 0.0);
 
     /** 
      * Rows 
      * 
      * @return the number of rows in the tensor
      */
-    //int rows();
+    int rows();
 
     /** 
      * Cols 
      * 
      * @return the number of columns in the tensor
      */
-    //int cols();
+    int cols();
 
     /** 
      * Depth 
      * 
      * @return the depth of the tensor
      */
-    //int depth();
+    int depth();
     
     /** 
      * Get minimum 
@@ -339,7 +345,7 @@ public:
      * 
      * @return the minimum of data( , , k)
      */
-    //float getMin(int k);
+    float getMin(int k);
 
     /** 
      * Get maximum 
@@ -348,7 +354,7 @@ public:
      * 
      * @return the maximum of data( , , k)
      */
-    //float getMax(int k);
+    float getMax(int k);
 
     /** 
      * showSize
@@ -359,7 +365,7 @@ public:
      * rows" x "colums" x "depth
      * 
      */
-    //void showSize();
+    void showSize();
     
     /* IOSTREAM */
 
@@ -429,6 +435,8 @@ public:
      * data(3,1,1)
      * data(3,2,1)
      * 
+        @param filename the filename where the tensor should be stored
+
      * if the file is not reachable throw unable_to_read_file()
      * 
      */
