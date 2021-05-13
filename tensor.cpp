@@ -15,9 +15,9 @@ using namespace std;
 
 /**
  * Random Initialization
- * 
+ *
  * Perform a random initialization of the tensor
- * 
+ *
  * @param mean The mean
  * @param std  Standard deviation
  */
@@ -48,6 +48,7 @@ void Tensor::init_random(float mean, float std)
 
 Tensor::Tensor() : r{0}, c{0}, d{0}
 {
+    matrix = nullptr;
 }
 
 /*
@@ -137,24 +138,6 @@ Tensor::Tensor(const Tensor &that)
                 matrix[i][j][k] = that.matrix[i][j][k];
             }
         }
-    }
-}
-
-void Tensor::stampa_Tensor()
-{
-
-    for (int i = 0; i < r; i++)
-    {
-        for (int j = 0; j < c; j++)
-        {
-            for (int k = 0; k < d; k++)
-            {
-                cout << matrix[i][j][k];
-                cout << ":";
-            }
-            cout << "|";
-        }
-        cout << endl;
     }
 }
 
@@ -374,11 +357,11 @@ void Tensor::clamp(float low, float high)
 void Tensor::rescale(float new_max)
 {
     /*  newvalue(i,j,k) = ((data(i,j,k)-min(k))/(max(k)-min(k)))*new_max
-     * 
+     *
      * where max(k) and min(k) are the maximum and minimum value in the k-th channel.
-     * 
+     *
      * new_max is the new value for the maximum.
-     
+
      1. Scorrere e trovare min e max
      2. Definire un nuovo valore di k
      3. Applicare la formula
@@ -523,10 +506,34 @@ Tensor Tensor::concat(const Tensor &rhs, int axis)
     }
 }
 
+Tensor Tensor::convolve(const Tensor &f)
+{
 
-Tensor Tensor::convolve(const Tensor &f) {
+    Tensor temp{(this->r - f.r + 1), (this->c - f.c + 1), d, 0.0};
 
+    float ris;
 
+    for (int k = 0; k < temp.d; k++)
+    {
+        for (int i = 0; i < temp.r; i++)
+        {
+            for (int j = 0; j < temp.c; j++)
+            {
+                ris = 0; //Metto il valore zero in ogni casella del filtro
+                //Mi dice cosa c'è dentro ogni casella finale
+
+                for (int m = 0; m < f.r; m++)
+                {
+                    for (int n = 0; n < f.c; n++)
+                    {
+                        ris += (this->matrix[m + i][n + j][k] * f.matrix[m][n][k]);
+                    }
+                }
+                temp.matrix[i][j][k] = ris;
+            }
+        }
+    }
+    return temp;
 }
 
 //utility
@@ -601,8 +608,87 @@ void Tensor::showSize()
 }
 
 //IOSTREAM
-/*
-friend ostream& operator<< (ostream& stream, const Tensor & obj){
-    
+
+ostream &operator<<(ostream &stream, const Tensor &obj)
+{
+    for (int k = 0; k < obj.d; k++)
+    {
+        for (int i = 0; i < obj.r; i++)
+        {
+            stream << '[';
+            for (int j = 0; j < obj.c; j++)
+            {
+                stream << obj.matrix[i][j][k];
+                if (j != (obj.c - 1))
+                    stream << ',';
+            }
+            stream << ']' << endl;
+        }
+        stream << endl;
+    }
+
+    return stream;
 }
-*/
+
+void Tensor::read_file(string filename)
+{
+    if (matrix != nullptr)
+        this->~Tensor();
+    ifstream ifile;
+    ifile.open(filename, ios::in);
+    if (!ifile.is_open())
+    {
+        throw unable_to_read_file();
+    }
+    string str_r, str_c, str_d;
+    getline(ifile, str_r);
+    getline(ifile, str_c);
+    getline(ifile, str_d);
+    r = stof(str_r);
+    c = stof(str_c);
+    d = stof(str_d);
+
+    matrix = get_matrix(r, c, d, 0);
+
+    string value;
+    for (int k = 0; k < d; k++)
+    {
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+                getline(ifile, value);
+                matrix[i][j][k] = stof(value);
+            }
+        }
+    }
+    ifile.close();
+}
+
+void Tensor::write_file(string filename)
+{
+    ofstream ifile;
+    ifile.open(filename);
+    if (!ifile.is_open())
+    {
+        throw unable_to_write_file();
+    }
+    ifile << to_string(r) << endl;
+    ifile << to_string(c) << endl;
+    ifile << to_string(d) << endl;
+
+    string value;
+    for (int k = 0; k < d; k++)
+    {
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+
+                /* Serve un casting ad intero*/
+                ifile << to_string(matrix[i][j][k]) << endl;
+            }
+        }
+    }
+    ifile.close();
+}

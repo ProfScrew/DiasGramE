@@ -46,6 +46,10 @@ struct filter_odd_dimensions{
     string code = "008";   
 };
 
+struct unable_to_write_file{
+    string msg = "Unable to write file";
+    string code = "009";  
+};
 
 #endif
 

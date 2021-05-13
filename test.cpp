@@ -6,14 +6,17 @@
 #include "dais_exc.h"
 int main() {
     try{
-    Tensor t(3,3,3,2);
-    Tensor s(3,6,3,1);
+    Tensor t(3,3,3,7);
+
+    
     t(1,1,0)=5;
     t(1,1,1)=10;
-    Tensor res=t.concat(s,1);
-    res.stampa_Tensor();
+    
+    std::cout << t;
 
-
+    t.read_file("tensors/t_5_4_2_random.txt");
+    t.write_file("test.txt");
+    std::cout << t;
     /*Tensor a = t.padding(1,1);
     t.stampa_Tensor();
     std::cout << std::endl;

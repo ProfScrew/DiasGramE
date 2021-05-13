@@ -8,6 +8,12 @@
 
 using namespace std;
 
+DAISGram::DAISGram() {
+}
+
+DAISGram::~DAISGram(){
+}
+
 /**
  * Load a bitmap from file
  *
@@ -57,6 +63,42 @@ void DAISGram::save_image(string filename){
     img.write(filename);
 
 }
+
+int DAISGram::getRows(){
+    return data.rows();
+}
+
+
+
+int DAISGram::getCols(){
+    return data.cols();
+}
+
+
+int DAISGram::getDepth(){
+    return data.depth();
+}
+
+
+DAISGram DAISGram::brighten(float bright){
+    
+    DAISGram t;
+    
+    Tensor temp{data}; 
+
+    temp = data + bright;
+
+    t.data = temp;
+
+    return t;
+}
+
+
+
+
+
+
+
 
 
 /**

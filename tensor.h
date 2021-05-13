@@ -381,7 +381,7 @@ public:
      * ...
      * [..., ..., k]
      */
-    //friend ostream& operator<< (ostream& stream, const Tensor & obj);
+    friend ostream& operator<< (ostream& stream, const Tensor & obj);
 
     /**
      * Reading from file
@@ -410,7 +410,7 @@ public:
      * 
      * @param filename the filename where the tensor is stored
      */
-    //void read_file(string filename);
+    void read_file(string filename);
 
     /**
      * Write the tensor to a file
@@ -440,10 +440,10 @@ public:
      * if the file is not reachable throw unable_to_read_file()
      * 
      */
-    //void write_file(string filename);
+    void write_file(string filename);
     
 
-    void stampa_Tensor();
+
 };
 
 #endif
