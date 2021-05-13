@@ -442,7 +442,14 @@ public:
      */
     void write_file(string filename);
     
-
+    /* Effettua lo scambio dei canali (depth)
+     *
+     * non ritorna nulla
+     *
+     *
+     *
+     */
+    void swap_channel(int depth_first, int depth_second);
 
 };
 

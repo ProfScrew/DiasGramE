@@ -692,3 +692,16 @@ void Tensor::write_file(string filename)
     }
     ifile.close();
 }
+
+void Tensor::swap_channel(int depth_first, int depth_second){
+    float temp;
+    for (int i = 0; i < r; i++){
+            for (int j = 0; j < c; j++){
+                temp =matrix[i][j][depth_first];
+                matrix[i][j][depth_first] = matrix[i][j][depth_second];
+                matrix[i][j][depth_second] = temp;
+            }
+            
+    }
+
+}

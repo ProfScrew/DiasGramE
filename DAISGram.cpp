@@ -124,7 +124,26 @@ DAISGram DAISGram::grayscale()
 }
 
 DAISGram DAISGram::warhol(){
+    DAISGram t;
+    /*Tensor* top_right = new Tensor{data}; */
+    Tensor top_right{data};
+    Tensor bottom_left{data};
+    Tensor bottom_right{data};
 
+    top_right.swap_channel(0,1);
+    bottom_left.swap_channel(1,2);
+    bottom_right.swap_channel(0,2);
+
+
+
+    Tensor top_result = data.concat(top_right, 1);
+    Tensor bottom_result = bottom_left.concat(bottom_right, 1);
+
+    Tensor res = top_result.concat(bottom_result,0);
+
+    t.data = res;
+    
+    return t;
 }
 
 /**
