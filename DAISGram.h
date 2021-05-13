@@ -81,7 +81,7 @@ class DAISGram{
          *  
          * @return returns a new DAISGram containing the modified object
          */
-        //DAISGram grayscale();
+        DAISGram grayscale();
 
         /**
          * Create a Warhol effect on the image
@@ -96,7 +96,7 @@ class DAISGram{
          * 
          * @return returns a new DAISGram containing the modified object
          */
-        //DAISGram warhol();
+        DAISGram warhol();
 
         /**
          * Sharpen the image

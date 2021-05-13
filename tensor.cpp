@@ -221,7 +221,7 @@ Tensor Tensor::operator/(const Tensor &rhs)
             {
                 for (int k = 0; k < d; k++)
                 {
-                    res.matrix[i][j][k] = this->matrix[i][j][k] * rhs.matrix[i][j][k];
+                    res.matrix[i][j][k] = this->matrix[i][j][k] / rhs.matrix[i][j][k];
                 }
             }
         }

@@ -6,12 +6,13 @@ int main(){
 
     DAISGram a;
 
-    a.generate_random(2,2,2);
+    a.generate_random(2,2,3);
 
     cout << a.data;
 
-    DAISGram b = a.brighten(1);
+    DAISGram b = a.grayscale();
 
     cout << b.data;
+
     return 0;
 }
