@@ -280,6 +280,21 @@ Tensor Tensor::operator*(const float &rhs)
     }
     return res;
 }
+Tensor Tensor::operator*(const float &rhs) const
+{
+    Tensor res{r, c, d, 0};
+    for (int i = 0; i < r; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+            for (int k = 0; k < d; k++)
+            {
+                res.matrix[i][j][k] = this->matrix[i][j][k] * rhs;
+            }
+        }
+    }
+    return res;
+}
 
 Tensor Tensor::operator/(const float &rhs)
 {
@@ -509,6 +524,9 @@ Tensor Tensor::concat(const Tensor &rhs, int axis)
 Tensor Tensor::convolve(const Tensor &f)
 {
 
+    if (f.c % 2 == 0 || f.d % 2 == 0 || f.d % 2 == 0)
+        throw filter_odd_dimensions();
+
     Tensor temp{(this->r - f.r + 1), (this->c - f.c + 1), d, 0.0};
 
     float ris;
@@ -693,15 +711,16 @@ void Tensor::write_file(string filename)
     ifile.close();
 }
 
-void Tensor::swap_channel(int depth_first, int depth_second){
+void Tensor::swap_channel(int depth_first, int depth_second)
+{
     float temp;
-    for (int i = 0; i < r; i++){
-            for (int j = 0; j < c; j++){
-                temp =matrix[i][j][depth_first];
-                matrix[i][j][depth_first] = matrix[i][j][depth_second];
-                matrix[i][j][depth_second] = temp;
-            }
-            
+    for (int i = 0; i < r; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+            temp = matrix[i][j][depth_first];
+            matrix[i][j][depth_first] = matrix[i][j][depth_second];
+            matrix[i][j][depth_second] = temp;
+        }
     }
-
 }

@@ -173,6 +173,8 @@ public:
      */
     Tensor operator*(const float &rhs);
 
+    Tensor operator*(const float &rhs)const;
+
     /**
      * Operator overloading / between a Tensor and a constant
      * 

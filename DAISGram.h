@@ -10,59 +10,55 @@
 
 using namespace std;
 
-class DAISGram{
+class DAISGram
+{
 
-    private:
+private:
+public:
+    Tensor data;
 
-        
+    DAISGram();
 
-    public:
-    
-        Tensor data;
+    ~DAISGram();
 
-        DAISGram();
-
-        ~DAISGram();
-
-        /**
+    /**
          * Load a bitmap from file
          *
          * @param filename String containing the path of the file
          */
-        void load_image(string filename);
+    void load_image(string filename);
 
-
-        /**
+    /**
          * Save a DAISGram object to a bitmap file.
          * 
          * Data is clamped to 0,255 before saving it.
          *
          * @param filename String containing the path where to store the image.
          */
-        void save_image(string filename);
+    void save_image(string filename);
 
-        /**
+    /**
          * Get rows
          *
          * @return returns the number of rows in the image
          */
-        int getRows();
+    int getRows();
 
-        /**
+    /**
          * Get columns
          *
          * @return returns the number of columns in the image
          */
-        int getCols();
+    int getCols();
 
-        /**
+    /**
          * Get depth
          *
          * @return returns the number of channels in the image
          */
-        int getDepth();
+    int getDepth();
 
-        /**
+    /**
          * Brighten the image
          * 
          * It sums the bright variable to all the values in the image.
@@ -72,18 +68,18 @@ class DAISGram{
          * @param bright the amount of bright to add (if negative the image gets darker)
          * @return returns a new DAISGram containing the modified object
          */
-        DAISGram brighten(float bright);
+    DAISGram brighten(float bright);
 
-        /**
+    /**
          * Create a grayscale version of the object
          * 
          * A grayscale image is produced by substituting each pixel with its average on all the channel
          *  
          * @return returns a new DAISGram containing the modified object
          */
-        DAISGram grayscale();
+    DAISGram grayscale();
 
-        /**
+    /**
          * Create a Warhol effect on the image
          * 
          * This function returns a composition of 4 different images in which the:
@@ -96,9 +92,9 @@ class DAISGram{
          * 
          * @return returns a new DAISGram containing the modified object
          */
-        DAISGram warhol();
+    DAISGram warhol();
 
-        /**
+    /**
          * Sharpen the image
          * 
          * This function makes the image sharper by convolving it with a sharp filter
@@ -112,9 +108,9 @@ class DAISGram{
          * 
          * @return returns a new DAISGram containing the modified object
          */
-        //DAISGram sharpen();
+    DAISGram sharpen();
 
-        /**
+    /**
          * Emboss the image
          * 
          * This function makes the image embossed (a light 3D effect) by convolving it with an
@@ -129,9 +125,9 @@ class DAISGram{
          *  
          * @return returns a new DAISGram containing the modified object
          */
-        //DAISGram emboss();
+    DAISGram emboss();
 
-        /**
+    /**
          * Smooth the image
          * 
          * This function remove the noise in an image using convolution and an average filter
@@ -147,9 +143,9 @@ class DAISGram{
          * @param h the size of the filter
          * @return returns a new DAISGram containing the modified object
          */
-        //DAISGram smooth(int h=3);
+    DAISGram smooth(int h = 3);
 
-        /**
+    /**
          * Edges of an image
          * 
          * This function extract the edges of an image by using the convolution 
@@ -166,10 +162,10 @@ class DAISGram{
          * Before returning the image, the corresponding tensor should be clamped in [0,255]
          *  
          * @return returns a new DAISGram containing the modified object
-         */  
-        //DAISGram edge();
+         */
+    DAISGram edge();
 
-        /**
+    /**
          * Blend with anoter image
          * 
          * This function generate a new DAISGram which is the composition 
@@ -183,10 +179,10 @@ class DAISGram{
          * @param rhs The second image involved in the blending
          * @param alpha The parameter of the convex combination  
          * @return returns a new DAISGram containing the blending of the two images.
-         */  
-        //DAISGram blend(const DAISGram & rhs, float alpha=0.5);
+         */
+    DAISGram blend(const DAISGram &rhs, float alpha = 0.5);
 
-        /**
+    /**
          * Green Screen
          * 
          * This function substitutes a pixel with the corresponding one in a background image 
@@ -199,10 +195,10 @@ class DAISGram{
          * @param rgb[] The color to substitute (rgb[0] = RED, rgb[1]=GREEN, rgb[2]=BLUE) 
          * @param threshold[] The threshold to add/remove for each color (threshold[0] = RED, threshold[1]=GREEN, threshold[2]=BLUE) 
          * @return returns a new DAISGram containing the result.
-         */  
-        //DAISGram greenscreen(DAISGram & bkg, int rgb[], float threshold[]);
+         */
+    //DAISGram greenscreen(DAISGram & bkg, int rgb[], float threshold[]);
 
-        /**
+    /**
          * Equalize
          * 
          * Stretch the distribution of colors of the image in order to use the full range of intesities.
@@ -210,11 +206,10 @@ class DAISGram{
          * See https://it.wikipedia.org/wiki/Equalizzazione_dell%27istogramma
          * 
          * @return returns a new DAISGram containing the equalized image.
-         */  
-        //DAISGram equalize();
+         */
+    //DAISGram equalize();
 
-
-        /**
+    /**
          * Generate Random Image
          * 
          * Generate a random image from nois
@@ -223,8 +218,8 @@ class DAISGram{
          * @param w width of the image
          * @param d number of channels
          * @return returns a new DAISGram containing the generated image.
-         */  
-        void generate_random(int h, int w, int d);
+         */
+    void generate_random(int h, int w, int d);
 };
 
 #endif

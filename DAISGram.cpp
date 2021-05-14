@@ -104,46 +104,143 @@ DAISGram DAISGram::grayscale()
 
     DAISGram t;
 
-    /*
-    Tensor res;
-    for(int k = 0; k < data.depth(); k++){
-        Tensor temp = data.subset(0, (data.rows()-1), 0, (data.cols() -1), k, k);
-        res = res + temp;
-    }
-    res = res /data.depth();
+    Tensor res{data.rows(), data.cols(), 1, 0};
+
+    Tensor Ca{data}, Cb{data};
+    /*  data        RGB
+        Ca          BRG
+        Cb          GBR
     */
+    Ca.swap_channel(0, 1);
+    Ca.swap_channel(0, 2);
 
-    Tensor Red = data.subset(0, (data.rows() - 1), 0, (data.cols() - 1), 0, 0);
-    Tensor Green = data.subset(0, (data.rows() - 1), 0, (data.cols() - 1), 1, 1);
-    Tensor Blue = data.subset(0, (data.rows() - 1), 0, (data.cols() - 1), 2, 2);
+    Cb.swap_channel(0, 1);
+    Cb.swap_channel(1, 2);
 
-    Tensor res = (Red + Green + Blue) / 3;
+    res = (data + Ca + Cb) / 3;
 
     t.data = res;
     return t;
 }
 
-DAISGram DAISGram::warhol(){
+DAISGram DAISGram::warhol()
+{
     DAISGram t;
     /*Tensor* top_right = new Tensor{data}; */
     Tensor top_right{data};
     Tensor bottom_left{data};
     Tensor bottom_right{data};
 
-    top_right.swap_channel(0,1);
-    bottom_left.swap_channel(1,2);
-    bottom_right.swap_channel(0,2);
-
-
+    top_right.swap_channel(0, 1);
+    bottom_left.swap_channel(1, 2);
+    bottom_right.swap_channel(0, 2);
 
     Tensor top_result = data.concat(top_right, 1);
     Tensor bottom_result = bottom_left.concat(bottom_right, 1);
 
-    Tensor res = top_result.concat(bottom_result,0);
+    Tensor res = top_result.concat(bottom_result, 0);
 
     t.data = res;
-    
+
     return t;
+}
+
+DAISGram DAISGram::sharpen()
+{
+    DAISGram temp;
+    Tensor filter{3, 3, 3, 0};
+    /*
+    for(int k = 0; k < data.depth(); k++){
+        filter(1,1,k) = 5;
+        filter(0,1,k) = -1;
+        filter(1,0,k) = -1;
+        filter(1,2,k) = -1;
+        filter(2,1,k) = -1;
+    }*/
+    filter.read_file("filter/sharp.txt");
+    Tensor res;
+
+    res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
+
+    res = res.convolve(filter);
+    res.clamp(0, 255);
+    temp.data = res;
+
+    return temp;
+}
+
+DAISGram DAISGram::emboss()
+{
+    DAISGram temp;
+    Tensor filter{3, 3, 3, 0};
+    /*
+    for(int k = 0; k < data.depth(); k++){
+        filter(1,1,k) = 5;
+        filter(0,1,k) = -1;
+        filter(1,0,k) = -1;
+        filter(1,2,k) = -1;
+        filter(2,1,k) = -1;
+    }*/
+    filter.read_file("filter/emboss.txt");
+    Tensor res;
+
+    res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
+
+    res = res.convolve(filter);
+    res.clamp(0, 255);
+    temp.data = res;
+
+    return temp;
+}
+
+DAISGram DAISGram::smooth(int h)
+{
+    DAISGram temp;
+    Tensor filter{h, h, 3, (1 / ((float)h * (float)h))};
+
+    Tensor res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
+
+    res = res.convolve(filter);
+    res.clamp(0, 255);
+    temp.data = res;
+
+    return temp;
+}
+
+DAISGram DAISGram::edge()
+{
+    DAISGram temp;
+    temp.data = data;
+
+    temp = temp.grayscale();
+
+    Tensor filter{3, 3, 3, 0};
+    /*
+    for(int k = 0; k < data.depth(); k++){
+        filter(1,1,k) = 5;
+        filter(0,1,k) = -1;
+        filter(1,0,k) = -1;
+        filter(1,2,k) = -1;
+        filter(2,1,k) = -1;
+    }*/
+    filter.read_file("filter/edge.txt");
+    Tensor res;
+
+    res = temp.data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
+
+    res = res.convolve(filter);
+    res.clamp(0, 255);
+    temp.data = res;
+
+    return temp;
+}
+
+DAISGram DAISGram::blend(const DAISGram &rhs, float alpha)
+{
+    DAISGram result;
+    result.data = (data * alpha) + (rhs.data * (1 - alpha));
+
+    return result;
 }
 
 /**
