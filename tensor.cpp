@@ -187,6 +187,27 @@ Tensor Tensor::operator+(const Tensor &rhs)
     }
 }
 
+bool Tensor::operator==(const Tensor& rhs)const{
+    
+    if(r == rhs.r || c == rhs.c || d == rhs.d){
+        for (int i = 0; i < r; i++){
+            for (int j = 0; j < c; j++){
+                for (int k = 0; k < d; k++){
+                    if(matrix[i][j][k] != rhs.matrix[i][j][k])
+                        return false;
+                }
+            }
+        }
+    }else
+        return false;
+    //
+    
+
+
+    return true;
+    
+}
+
 Tensor Tensor::operator*(const Tensor &rhs)
 {
     if (r == rhs.r && c == rhs.c && d == rhs.d)
