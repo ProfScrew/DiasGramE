@@ -14,8 +14,8 @@ class DAISGram
 {
 
 private:
+     Tensor data;
 public:
-    Tensor data;
 
     DAISGram();
 

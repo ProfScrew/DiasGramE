@@ -131,9 +131,9 @@ DAISGram DAISGram::warhol()
     Tensor bottom_left{data};
     Tensor bottom_right{data};
 
-    top_right.swap_channel(0, 1);
-    bottom_left.swap_channel(1, 2);
-    bottom_right.swap_channel(0, 2);
+    top_right.swap_channel(0, 1);    //RED WITH GREEN
+    bottom_left.swap_channel(1, 2);  //GREEN WITH BLUE
+    bottom_right.swap_channel(0, 2); //RED WITH BLUE
 
     Tensor top_result = data.concat(top_right, 1);
     Tensor bottom_result = bottom_left.concat(bottom_right, 1);
@@ -193,20 +193,6 @@ DAISGram DAISGram::emboss()
     return temp;
 }
 
-DAISGram DAISGram::smooth(int h)
-{
-    DAISGram temp;
-    Tensor filter{h, h, 3, (1 / ((float)h * (float)h))};
-
-    Tensor res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
-
-    res = res.convolve(filter);
-    res.clamp(0, 255);
-    temp.data = res;
-
-    return temp;
-}
-
 DAISGram DAISGram::edge()
 {
     DAISGram temp;
@@ -227,6 +213,20 @@ DAISGram DAISGram::edge()
     Tensor res;
 
     res = temp.data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
+
+    res = res.convolve(filter);
+    res.clamp(0, 255);
+    temp.data = res;
+
+    return temp;
+}
+
+DAISGram DAISGram::smooth(int h)
+{
+    DAISGram temp;
+    Tensor filter{h, h, 3, (1 / ((float)h * (float)h))};
+
+    Tensor res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
 
     res = res.convolve(filter);
     res.clamp(0, 255);
@@ -276,11 +276,61 @@ DAISGram DAISGram::greenscreen(DAISGram &bkg, int rgb[], float threshold[])
 DAISGram DAISGram::equalize()
 {
     DAISGram result;
-    Tensor temp;
+    Tensor temp{data};
 
-    if(data.check_color()){ //check if the immage is black and white or colored
+    if (data.check_color())
+    { //check if the immage is black and white or colored
+        result.data = temp;
+        return result;
+    }
+    else
+    { // black and white
 
-    }else{// black and white
+        int histogram[256] = {};
+        float cdf[256], equalized[256];
+        for (int i = 0; i < data.rows(); i++)
+        {
+            for (int j = 0; j < data.cols(); j++)
+            {
+                histogram[(int)data(i, j, 0)]++;
+            }
+        }
+        int count = 0;
+        for (int i = 0; i < 256; i++)
+        {
+            count += histogram[i];
+            cdf[i] = 1.0 * count / (data.rows() * data.cols());
+        }
+        int min = 0;
+        int a = 0;
+        while (min == 0)
+        {
+            if (cdf[a] != 0.0)
+                min = a;
+
+            a++;
+        }
+
+        for (int i = 0; i < 256; i++)
+        {
+            equalized[i] = (int)(((cdf[i] - cdf[min]) / ((float)(data.rows() * data.cols()) - cdf[min])) * 255);
+        }
+        for (int i = 0; i < data.rows(); i++)
+        {
+            for (int j = 0; j < data.cols(); j++)
+            {
+                for (int k = 0; k < data.depth(); k++)
+                {
+                    temp(i, j, k) = equalized[(int)data(i, j, k)];
+                }
+            }
+        }
+    }
+    result.data = temp;
+    return result;
+    /*
+
+        //--------------------------------
         int histogram[256] = {};
         for (int i = 0; i < data.rows(); i++)
         {
@@ -294,6 +344,14 @@ DAISGram DAISGram::equalize()
         float alpha = 255.0/ (float) size;
 
 
+        int count = 0;
+    //cimg_forX(histogram, pos) { // calculate cdf and equalized transform
+    count += histogram[pos];
+    cdf[pos] = 1.0 * count / number_of_pixels;
+    equalized[pos] = round(cdf[pos] * (L - 1));
+
+
+        
     }
 
 
@@ -309,7 +367,7 @@ DAISGram DAISGram::equalize()
         }
     }
     //---
-    
+    */
 }
 
 /**

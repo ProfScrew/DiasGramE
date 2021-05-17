@@ -97,7 +97,7 @@ Tensor::~Tensor()
 float Tensor::operator()(int i, int j, int k) const
 {
 
-    if (i >= this->r || i < 0 || j >= this->c || j < 0 || k >= this->d || k < 0)
+    if (i >= r || i < 0 || j >= c || j < 0 || k >= d || k < 0)
     {
         throw index_out_of_bound();
     }
@@ -109,21 +109,21 @@ float Tensor::operator()(int i, int j, int k) const
 
 float &Tensor::operator()(int i, int j, int k)
 {
-    if (i >= this->r || i < 0 || j >= this->c || j < 0 || k >= this->d || k < 0)
+    if (i >= r || i < 0 || j >= c || j < 0 || k >= d || k < 0)
     {
         throw index_out_of_bound();
     }
     else
     {
-        return this->matrix[i][j][k];
+        return matrix[i][j][k];
     }
 }
 
 Tensor::Tensor(const Tensor &that)
 {
-    this->r = that.r;
-    this->c = that.c;
-    this->d = that.d;
+    r = that.r;
+    c = that.c;
+    d = that.d;
 
     matrix = new float **[r];
 
@@ -152,7 +152,7 @@ Tensor Tensor::operator-(const Tensor &rhs)
             {
                 for (int k = 0; k < d; k++)
                 {
-                    res.matrix[i][j][k] = this->matrix[i][j][k] - rhs.matrix[i][j][k];
+                    res.matrix[i][j][k] = matrix[i][j][k] - rhs.matrix[i][j][k];
                 }
             }
         }
@@ -175,7 +175,7 @@ Tensor Tensor::operator+(const Tensor &rhs)
             {
                 for (int k = 0; k < d; k++)
                 {
-                    res.matrix[i][j][k] = this->matrix[i][j][k] + rhs.matrix[i][j][k];
+                    res.matrix[i][j][k] = matrix[i][j][k] + rhs.matrix[i][j][k];
                 }
             }
         }
@@ -198,7 +198,7 @@ Tensor Tensor::operator*(const Tensor &rhs)
             {
                 for (int k = 0; k < d; k++)
                 {
-                    res.matrix[i][j][k] = this->matrix[i][j][k] * rhs.matrix[i][j][k];
+                    res.matrix[i][j][k] = matrix[i][j][k] * rhs.matrix[i][j][k];
                 }
             }
         }
@@ -221,7 +221,7 @@ Tensor Tensor::operator/(const Tensor &rhs)
             {
                 for (int k = 0; k < d; k++)
                 {
-                    res.matrix[i][j][k] = this->matrix[i][j][k] / rhs.matrix[i][j][k];
+                    res.matrix[i][j][k] = matrix[i][j][k] / rhs.matrix[i][j][k];
                 }
             }
         }
@@ -242,7 +242,7 @@ Tensor Tensor::operator-(const float &rhs)
         {
             for (int k = 0; k < d; k++)
             {
-                res.matrix[i][j][k] = this->matrix[i][j][k] - rhs;
+                res.matrix[i][j][k] = matrix[i][j][k] - rhs;
             }
         }
     }
@@ -258,7 +258,7 @@ Tensor Tensor::operator+(const float &rhs)
         {
             for (int k = 0; k < d; k++)
             {
-                res.matrix[i][j][k] = this->matrix[i][j][k] + rhs;
+                res.matrix[i][j][k] = matrix[i][j][k] + rhs;
             }
         }
     }
@@ -274,7 +274,7 @@ Tensor Tensor::operator*(const float &rhs)
         {
             for (int k = 0; k < d; k++)
             {
-                res.matrix[i][j][k] = this->matrix[i][j][k] * rhs;
+                res.matrix[i][j][k] = matrix[i][j][k] * rhs;
             }
         }
     }
@@ -289,7 +289,7 @@ Tensor Tensor::operator*(const float &rhs) const
         {
             for (int k = 0; k < d; k++)
             {
-                res.matrix[i][j][k] = this->matrix[i][j][k] * rhs;
+                res.matrix[i][j][k] = matrix[i][j][k] * rhs;
             }
         }
     }
@@ -305,7 +305,7 @@ Tensor Tensor::operator/(const float &rhs)
         {
             for (int k = 0; k < d; k++)
             {
-                res.matrix[i][j][k] = this->matrix[i][j][k] / rhs;
+                res.matrix[i][j][k] = matrix[i][j][k] / rhs;
             }
         }
     }
@@ -322,9 +322,9 @@ Tensor &Tensor::operator=(const Tensor &other)
 
     this->~Tensor();
 
-    this->r = other.r;
-    this->c = other.c;
-    this->d = other.d;
+    r = other.r;
+    c = other.c;
+    d = other.d;
 
     matrix = new float **[r];
 
@@ -527,7 +527,7 @@ Tensor Tensor::convolve(const Tensor &f)
     if (f.c % 2 == 0 || f.d % 2 == 0 || f.d % 2 == 0)
         throw filter_odd_dimensions();
 
-    Tensor temp{(this->r - f.r + 1), (this->c - f.c + 1), d, 0.0};
+    Tensor temp{(r - f.r + 1), (c - f.c + 1), d, 0.0};
 
     float ris;
 
@@ -544,7 +544,7 @@ Tensor Tensor::convolve(const Tensor &f)
                 {
                     for (int n = 0; n < f.c; n++)
                     {
-                        ris += (this->matrix[m + i][n + j][k] * f.matrix[m][n][k]);
+                        ris += (matrix[m + i][n + j][k] * f.matrix[m][n][k]);
                     }
                 }
                 temp.matrix[i][j][k] = ris;
