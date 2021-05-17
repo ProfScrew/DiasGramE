@@ -486,6 +486,13 @@ public:
      */
     void swap_channel(int depth_first, int depth_second);
 
+    /*
+    * Check if the image is black and white or color
+    *
+    * 
+    */
+    bool check_color();
+
 };
 
 #endif

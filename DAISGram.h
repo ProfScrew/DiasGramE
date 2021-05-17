@@ -196,7 +196,7 @@ public:
          * @param threshold[] The threshold to add/remove for each color (threshold[0] = RED, threshold[1]=GREEN, threshold[2]=BLUE) 
          * @return returns a new DAISGram containing the result.
          */
-    //DAISGram greenscreen(DAISGram & bkg, int rgb[], float threshold[]);
+    DAISGram greenscreen(DAISGram & bkg, int rgb[], float threshold[]);
 
     /**
          * Equalize
@@ -207,7 +207,7 @@ public:
          * 
          * @return returns a new DAISGram containing the equalized image.
          */
-    //DAISGram equalize();
+    DAISGram equalize();
 
     /**
          * Generate Random Image
