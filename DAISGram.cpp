@@ -242,6 +242,45 @@ DAISGram DAISGram::blend(const DAISGram &rhs, float alpha)
 
     return result;
 }
+DAISGram DAISGram::greenscreen(DAISGram & bkg, int rgb[], float threshold[]){
+    DAISGram result;
+    bool check;
+    Tensor temp{data};
+
+    //scroll through the image
+    for(int i = 0; i < data.rows(); i++){
+        for(int j = 0; j < data.cols(); j++){
+            check = true;
+            for(int k = 0; k<data.depth(); k++){
+                 //check if the pixel is in the range 
+                if(data(i,j,k)  < (rgb[k]-threshold[k]) or data(i,j,k) > (rgb[k]+threshold[k]))
+                    check = false;
+                
+            }
+            if(check){  //change to the background
+                for(int k = 0; k<data.depth(); k++){
+                    temp(i,j,k) = bkg.data(i,j,k);
+                }
+            }
+        }
+    }
+    result.data = temp;
+    return result;
+}
+
+DAISGram DAISGram::equalize(){
+    DAISGram result;
+    Tensor temp;
+    //---
+    int histogram[256] = { };
+    for(int i = 0; i < data.rows(); i++){
+        for(int j = 0; j < data.cols(); j++){
+            histogram[(int) data(i,j,0)]++;
+        }
+    }
+    //---
+
+}
 
 /**
  * Generate Random Image

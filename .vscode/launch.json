@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/main",
-            "args": ["../images/seba.bmp", "../images/seba.bmp", "sharp", "out.bmp"],
+            "args": ["/home/stefano/Programmazione/github/DiasGramE/images/greenscreen/gs_2.bmp", "/home/stefano/Programmazione/github/DiasGramE/images/greenscreen/gs_2_bkg.bmp", "chromakey", "out.bmp"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
