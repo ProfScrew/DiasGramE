@@ -724,3 +724,16 @@ void Tensor::swap_channel(int depth_first, int depth_second)
         }
     }
 }
+
+
+bool Tensor::check_color(){
+
+    for(int i = 0; i< r; i++){
+        for(int j = 0; j<c; j++){
+            if(matrix[i][j][0] != matrix[i][j][1] || matrix[i][j][1] != matrix[i][j][2])
+                return true;
+        }
+    }
+
+    return false;
+}

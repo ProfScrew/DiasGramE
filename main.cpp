@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         cin >> r_ >> g_ >> b_ >> thr >> thg >> thb;
         int rgb[3] = {r_, g_, b_};
         float th[3] = {thr, thg, thb};
-        img = b.greenscreen(c,rgb,th);
+        img = b.greenscreen(c, rgb, th);
     }
     else if (strcmp(operation, "sharp") == 0)
     {
