@@ -278,7 +278,8 @@ DAISGram DAISGram::equalize()
     DAISGram result;
     Tensor temp{data};
 
-    for(int k=0;k<data.depth();k++){
+    for (int k = 0; k < data.depth(); k++)
+    {
         int histogram[256] = {};
         float cdf[256] = {}, equalized[256] = {};
         for (int i = 0; i < data.rows(); i++)
@@ -289,9 +290,11 @@ DAISGram DAISGram::equalize()
             }
         }
 
-        for(int i=0;i<256;i++){
-            for(int j=0;j<=i;j++){
-                cdf[i]+=histogram[j];
+        for (int i = 0; i < 256; i++)
+        {
+            for (int j = 0; j <= i; j++)
+            {
+                cdf[i] += histogram[j];
             }
         }
 
@@ -314,7 +317,7 @@ DAISGram DAISGram::equalize()
         {
             for (int j = 0; j < data.cols(); j++)
             {
-                    temp(i, j, k) = equalized[(int)data(i, j, k)];
+                temp(i, j, k) = equalized[(int)data(i, j, k)];
             }
         }
     }
