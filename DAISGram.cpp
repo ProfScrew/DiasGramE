@@ -280,8 +280,8 @@ DAISGram DAISGram::equalize()
 
     for (int k = 0; k < data.depth(); k++)
     {
-        int histogram[256] = {};
-        float cdf[256] = {}, equalized[256] = {};
+        int histogram[256] = {}, cdf[256] = {};
+        float equalized[256] = {};
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
@@ -298,11 +298,11 @@ DAISGram DAISGram::equalize()
             }
         }
 
-        float cdf_min = 0;
+        int cdf_min = 0;
         int index = 0;
         while (cdf_min == 0)
         {
-            if (cdf[index] != 0.0)
+            if (cdf[index] != 0)
                 cdf_min = cdf[index];
 
             index++;
@@ -310,7 +310,7 @@ DAISGram DAISGram::equalize()
 
         for (int i = 0; i < 256; i++)
         {
-            equalized[i] = round(((cdf[i] - cdf_min) / (data.rows() * data.cols() - cdf_min)) * 255);
+            equalized[i] = round(((cdf[i] - cdf_min) / (float)(data.rows() * data.cols() - cdf_min)) * 255);
         }
 
         for (int i = 0; i < data.rows(); i++)
