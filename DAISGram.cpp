@@ -310,7 +310,7 @@ DAISGram DAISGram::equalize()
 
         for (int i = 0; i < 256; i++)
         {
-            equalized[i] = (((cdf[i] - cdf_min) / ((float)(data.rows() * data.cols()) - cdf_min)) * 255);
+            equalized[i] = round(((cdf[i] - cdf_min) / (data.rows() * data.cols() - cdf_min)) * 255);
         }
 
         for (int i = 0; i < data.rows(); i++)

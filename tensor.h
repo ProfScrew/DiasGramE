@@ -12,7 +12,7 @@
 #define PI 3.141592654
 #define FLT_MAX 3.402823466e+38F /* max value */
 #define FLT_MIN 1.175494351e-38F /* min positive value */
-#define EPSILON 0.000001f  /* the rounding precision for comparing floats */
+#define EPSILON 0.000001f        /* the rounding precision for comparing floats */
 
 using namespace std;
 //  ciao :)
@@ -23,12 +23,11 @@ private:
     float ***matrix = nullptr;
     //float * data = nullptr; <-- you are free to change this data structure (don't use vectors)
 
-    int r = 0;  // number of rows
-    int c = 0;  // number of columns
-    int d = 0;  // tensor depth
+    int r = 0; // number of rows
+    int c = 0; // number of columns
+    int d = 0; // tensor depth
 
 public:
-
     /**
      * Class constructor
      * 
@@ -47,7 +46,7 @@ public:
      * @param v
      * @return new Tensor
      */
-    Tensor(int r, int c, int d, float v=0.0);
+    Tensor(int r, int c, int d, float v = 0.0);
 
     /**
      * Class distructor
@@ -86,8 +85,7 @@ public:
      *      
      * @return the new Tensor
      */
-    Tensor(const Tensor& that);
-
+    Tensor(const Tensor &that);
 
     /**
      * Operator overloading -
@@ -101,8 +99,8 @@ public:
      * @return returns a new Tensor containing the result of the operation
      */
     Tensor operator-(const Tensor &rhs);
-    
-     /**
+
+    /**
      * Operator overloading +
      * 
      * It performs the point-wise sum between two Tensors.
@@ -113,7 +111,7 @@ public:
      * 
      * @return returns a new Tensor containing the result of the operation
     */
-    Tensor operator +(const Tensor &rhs);
+    Tensor operator+(const Tensor &rhs);
 
     /**
      * Operator overloading ==
@@ -144,8 +142,7 @@ public:
      * 
      * @return returns true if all their entries are "floating" equal
      */
-    bool operator==(const Tensor& rhs)const;
-
+    bool operator==(const Tensor &rhs) const;
 
     /**
      * Operator overloading *
@@ -159,7 +156,7 @@ public:
      * @return returns a new Tensor containing the result of the operation
      */
     Tensor operator*(const Tensor &rhs);
-    
+
     /**
      * Operator overloading /
      * 
@@ -206,7 +203,7 @@ public:
      */
     Tensor operator*(const float &rhs);
 
-    Tensor operator*(const float &rhs)const;
+    Tensor operator*(const float &rhs) const;
 
     /**
      * Operator overloading / between a Tensor and a constant
@@ -226,7 +223,7 @@ public:
      * 
      * @return a reference to the receiver object
      */
-    Tensor & operator=(const Tensor &other);
+    Tensor &operator=(const Tensor &other);
 
     /**
      * Random Initialization
@@ -236,7 +233,7 @@ public:
      * @param mean The mean
      * @param std  Standard deviation
      */
-    void init_random(float mean=0.0, float std=1.0);
+    void init_random(float mean = 0.0, float std = 1.0);
 
     /**
      * Constant Initialization
@@ -248,7 +245,7 @@ public:
      * @param d The depth
      * @param v The initialization value
      */
-    void init(int r, int c, int d, float v=0.0);
+    void init(int r, int c, int d, float v = 0.0);
 
     /**
      * Tensor Clamp
@@ -273,7 +270,7 @@ public:
      * 
      * @param new_max New maximum vale
      */
-    void rescale(float new_max=1.0);
+    void rescale(float new_max = 1.0);
 
     /**
      * Tensor padding
@@ -327,8 +324,7 @@ public:
      * @param axis The axis along which perform the concatenation 
      * @return a new Tensor containing the result of the concatenation
      */
-    Tensor concat(const Tensor &rhs, int axis=0);
-
+    Tensor concat(const Tensor &rhs, int axis = 0);
 
     /** 
      * Convolution 
@@ -349,8 +345,8 @@ public:
      * This method creates a data structure which contains the tensor
      *
      * @return data_tensor
-     */ 
-    float*** get_matrix(int i, int j, int k, float v = 0.0);
+     */
+    float ***get_matrix(int i, int j, int k, float v = 0.0);
 
     /** 
      * Rows 
@@ -372,7 +368,7 @@ public:
      * @return the depth of the tensor
      */
     int depth();
-    
+
     /** 
      * Get minimum 
      * 
@@ -401,7 +397,7 @@ public:
      * 
      */
     void showSize();
-    
+
     /* IOSTREAM */
 
     /**
@@ -416,7 +412,7 @@ public:
      * ...
      * [..., ..., k]
      */
-    friend ostream& operator<< (ostream& stream, const Tensor & obj);
+    friend ostream &operator<<(ostream &stream, const Tensor &obj);
 
     /**
      * Reading from file
@@ -476,7 +472,7 @@ public:
      * 
      */
     void write_file(string filename);
-    
+
     /* Effettua lo scambio dei canali (depth)
      *
      * non ritorna nulla
@@ -485,14 +481,6 @@ public:
      *
      */
     void swap_channel(int depth_first, int depth_second);
-
-    /*
-    * Check if the image is black and white or color
-    *
-    * 
-    */
-    bool check_color();
-
 };
 
 #endif

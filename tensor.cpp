@@ -187,25 +187,28 @@ Tensor Tensor::operator+(const Tensor &rhs)
     }
 }
 
-bool Tensor::operator==(const Tensor& rhs)const{
-    
-    if(r == rhs.r || c == rhs.c || d == rhs.d){
-        for (int i = 0; i < r; i++){
-            for (int j = 0; j < c; j++){
-                for (int k = 0; k < d; k++){
-                    if(matrix[i][j][k] != rhs.matrix[i][j][k])
+bool Tensor::operator==(const Tensor &rhs) const
+{
+
+    if (r == rhs.r || c == rhs.c || d == rhs.d)
+    {
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+                for (int k = 0; k < d; k++)
+                {
+                    if (matrix[i][j][k] != rhs.matrix[i][j][k])
                         return false;
                 }
             }
         }
-    }else
+    }
+    else
         return false;
     //
-    
-
 
     return true;
-    
 }
 
 Tensor Tensor::operator*(const Tensor &rhs)
@@ -744,17 +747,4 @@ void Tensor::swap_channel(int depth_first, int depth_second)
             matrix[i][j][depth_second] = temp;
         }
     }
-}
-
-
-bool Tensor::check_color(){
-
-    for(int i = 0; i< r; i++){
-        for(int j = 0; j<c; j++){
-            if(matrix[i][j][0] != matrix[i][j][1] || matrix[i][j][1] != matrix[i][j][2])
-                return true;
-        }
-    }
-
-    return false;
 }
