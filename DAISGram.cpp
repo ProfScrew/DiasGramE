@@ -278,96 +278,49 @@ DAISGram DAISGram::equalize()
     DAISGram result;
     Tensor temp{data};
 
-    if (data.check_color())
-    { //check if the immage is black and white or colored
-        result.data = temp;
-        return result;
-    }
-    else
-    { // black and white
-
+    for(int k=0;k<data.depth();k++){
         int histogram[256] = {};
-        float cdf[256], equalized[256];
+        float cdf[256] = {}, equalized[256] = {};
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
             {
-                histogram[(int)data(i, j, 0)]++;
+                histogram[(int)data(i, j, k)]++;
             }
         }
-        int count = 0;
-        for (int i = 0; i < 256; i++)
-        {
-            count += histogram[i];
-            cdf[i] = 1.0 * count / (data.rows() * data.cols());
-        }
-        int min = 0;
-        int a = 0;
-        while (min == 0)
-        {
-            if (cdf[a] != 0.0)
-                min = a;
 
-            a++;
+        for(int i=0;i<256;i++){
+            for(int j=0;j<=i;j++){
+                cdf[i]+=histogram[j];
+            }
         }
 
+        float cdf_min = 0;
+        int index = 0;
+        while (cdf_min == 0)
+        {
+            if (cdf[index] != 0.0)
+                cdf_min = cdf[index];
+
+            index++;
+        }
+
         for (int i = 0; i < 256; i++)
         {
-            equalized[i] = (int)(((cdf[i] - cdf[min]) / ((float)(data.rows() * data.cols()) - cdf[min])) * 255);
+            equalized[i] = (((cdf[i] - cdf_min) / ((float)(data.rows() * data.cols()) - cdf_min)) * 255);
         }
+
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
             {
-                for (int k = 0; k < data.depth(); k++)
-                {
                     temp(i, j, k) = equalized[(int)data(i, j, k)];
-                }
             }
         }
     }
+
     result.data = temp;
     return result;
-    /*
-
-        //--------------------------------
-        int histogram[256] = {};
-        for (int i = 0; i < data.rows(); i++)
-        {
-            for (int j = 0; j < data.cols(); j++)
-            {
-                histogram[(int)data(i, j, 0)]++;
-            }
-        }
-        //size of image
-        int size = data.rows() * data.cols();
-        float alpha = 255.0/ (float) size;
-
-
-        int count = 0;
-    //cimg_forX(histogram, pos) { // calculate cdf and equalized transform
-    count += histogram[pos];
-    cdf[pos] = 1.0 * count / number_of_pixels;
-    equalized[pos] = round(cdf[pos] * (L - 1));
-
-
-        
-    }
-
-
-
-
-    //---
-    int histogram[256] = {};
-    for (int i = 0; i < data.rows(); i++)
-    {
-        for (int j = 0; j < data.cols(); j++)
-        {
-            histogram[(int)data(i, j, 0)]++;
-        }
-    }
-    //---
-    */
 }
 
 /**
