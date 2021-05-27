@@ -149,15 +149,15 @@ DAISGram DAISGram::sharpen()
 {
     DAISGram temp;
     Tensor filter{3, 3, 3, 0};
-    /*
+    
     for(int k = 0; k < data.depth(); k++){
         filter(1,1,k) = 5;
         filter(0,1,k) = -1;
         filter(1,0,k) = -1;
         filter(1,2,k) = -1;
         filter(2,1,k) = -1;
-    }*/
-    filter.read_file("filter/sharp.txt");
+    }
+    //filter.read_file("filter/sharp.txt");
     Tensor res;
 
     res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
@@ -173,15 +173,21 @@ DAISGram DAISGram::emboss()
 {
     DAISGram temp;
     Tensor filter{3, 3, 3, 0};
-    /*
+    
     for(int k = 0; k < data.depth(); k++){
-        filter(1,1,k) = 5;
+        filter(0,0,k) = -2;
+
         filter(0,1,k) = -1;
         filter(1,0,k) = -1;
-        filter(1,2,k) = -1;
-        filter(2,1,k) = -1;
-    }*/
-    filter.read_file("filter/emboss.txt");
+
+        filter(1,1,k) = 1;
+        filter(2,1,k) = 1;
+        filter(1,2,k) = 1;
+
+        filter(2,2,k) = 2;
+
+    }
+    //filter.read_file("filter/emboss.txt");
     Tensor res;
 
     res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
@@ -200,16 +206,15 @@ DAISGram DAISGram::edge()
 
     temp = temp.grayscale();
 
-    Tensor filter{3, 3, 3, 0};
-    /*
+    Tensor filter{3, 3, 3, -1};
+    
     for(int k = 0; k < data.depth(); k++){
-        filter(1,1,k) = 5;
-        filter(0,1,k) = -1;
-        filter(1,0,k) = -1;
-        filter(1,2,k) = -1;
-        filter(2,1,k) = -1;
-    }*/
+        filter(1,1,k) = 8;
+        
+    }
+    /*
     filter.read_file("filter/edge.txt");
+    */
     Tensor res;
 
     res = temp.data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
@@ -242,6 +247,7 @@ DAISGram DAISGram::blend(const DAISGram &rhs, float alpha)
 
     return result;
 }
+
 DAISGram DAISGram::greenscreen(DAISGram &bkg, int rgb[], float threshold[])
 {
     DAISGram result;
@@ -269,19 +275,22 @@ DAISGram DAISGram::greenscreen(DAISGram &bkg, int rgb[], float threshold[])
             }
         }
     }
+    
     result.data = temp;
     return result;
 }
 
-DAISGram DAISGram::equalize(DAISGram input)
+DAISGram DAISGram::equalize()
 {
     DAISGram result;
     Tensor temp{data};
 
     for (int k = 0; k < data.depth(); k++)
-    {
-        int histogram[256] = {0}, cdf[256] = {0};
-        float equalized[256] = {0};
+    {   
+        constexpr int size_color = 256;
+        int histogram[size_color] = {0}, cdf[size_color] = {0};
+        float equalized[size_color] = {0};
+        
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
@@ -290,7 +299,7 @@ DAISGram DAISGram::equalize(DAISGram input)
             }
         }
 
-        for (int i = 0; i < 256; i++)
+        for (int i = 0; i < size_color; i++)
         {
             for (int j = 0; j <= i; j++)
             {
@@ -308,32 +317,21 @@ DAISGram DAISGram::equalize(DAISGram input)
             index++;
         }
 
-        for (int i = 0; i < 256; i++)
+        for (int i = 0; i < size_color; i++)
         {
-            equalized[i] = round(((cdf[i] - cdf_min) / (float)(data.rows() * data.cols() - cdf_min)) * 255);
+            equalized[i] = (int)(((cdf[i] - cdf_min) / (float)(data.rows() * data.cols() - cdf_min)) * (size_color-1) );
         }
 
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
             {
-                int val=equalized[(int)data(i, j, 0)];
-                int val1=equalized[(int)data(i, j, 1)];
-                int val2=equalized[(int)data(i, j, 2)];
-                int res=(int)input.data(i,j,0);
-                int res1=(int)input.data(i,j,1);
-                int res2=(int)input.data(i,j,2);
                 temp(i, j, k) = equalized[(int)data(i, j, k)];
             }
         }
     }
 
     result.data = temp;
-    if(input.data==result.data){
-        cout<<"sono uguali";
-    }else{
-        cout<<"sono diversi";
-    }
     return result;
 }
 

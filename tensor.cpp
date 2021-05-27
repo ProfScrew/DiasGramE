@@ -58,25 +58,13 @@ data = *(base + a * (b x h) + b * (h) + c); // Note that we haven’t used the h
 */
 Tensor::Tensor(int r, int c, int d, float v)
 {
+    if (r < 0 || c < 0 || d < 0)
+        throw index_out_of_bound();
 
     this->r = r;
     this->c = c;
     this->d = d;
-    /*matrix = new float **[r];
 
-    for (int i = 0; i < r; i++)
-    {
-        matrix[i] = new float *[c];
-        for (int j = 0; j < c; j++)
-        {
-            matrix[i][j] = new float[d];
-            for (int k = 0; k < d; k++)
-            {
-                matrix[i][j][k] = v;
-            }
-        }
-    }
-    */
     matrix = get_matrix(r, c, d, v);
 }
 
@@ -124,6 +112,9 @@ Tensor::Tensor(const Tensor &that)
     r = that.r;
     c = that.c;
     d = that.d;
+
+    if (!that.matrix)
+        throw tensor_not_initialized();
 
     matrix = new float **[r];
 
@@ -206,7 +197,6 @@ bool Tensor::operator==(const Tensor &rhs) const
     }
     else
         return false;
-    //
 
     return true;
 }
@@ -395,17 +385,6 @@ void Tensor::clamp(float low, float high)
 
 void Tensor::rescale(float new_max)
 {
-    /*  newvalue(i,j,k) = ((data(i,j,k)-min(k))/(max(k)-min(k)))*new_max
-     *
-     * where max(k) and min(k) are the maximum and minimum value in the k-th channel.
-     *
-     * new_max is the new value for the maximum.
-
-     1. Scorrere e trovare min e max
-     2. Definire un nuovo valore di k
-     3. Applicare la formula
-    */
-
     float min, max;
 
     for (int k = 0; k < d; k++)
@@ -429,10 +408,6 @@ void Tensor::rescale(float new_max)
 
 Tensor Tensor::padding(int pad_h, int pad_w)
 {
-    /*Creare nuova matrice che sostituirà quella vecchia
-      Si copiano i valori della vecchia metrice in quella nuova
-      Si elimina la vecchia matrice
-    */
     Tensor temp{r + (2 * pad_h), c + (2 * pad_w), d, 0};
 
     for (int k = 0; k < d; k++)
