@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/main",
-            "args": ["/home/stefano/Programmazione/DiasGramE-main/images/equalize/hill.bmp", "/home/stefano/Programmazione/DiasGramE-main/images/equalize/hill.bmp","equalize", "out.bmp"],
+            "args": ["/home/stefano/Programmazione/DiasGramE-main/images/dais.bmp", "/home/stefano/Programmazione/DiasGramE-main/results/dais_equalize.bmp","equalize", "out.bmp"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

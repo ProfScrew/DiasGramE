@@ -65,7 +65,8 @@ int main (int argc, char * argv[]) {
         img = b.grayscale();
     }
     else if (strcmp(operation, "equalize") == 0) {
-        img = b.equalize();
+        c.load_image(fn_in_2);
+        img = b.equalize(c);  
     }else if (strcmp(operation, "chromakey") == 0) {
         c.load_image(fn_in_2); 
         int r_,g_,b_;

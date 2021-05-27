@@ -273,15 +273,15 @@ DAISGram DAISGram::greenscreen(DAISGram &bkg, int rgb[], float threshold[])
     return result;
 }
 
-DAISGram DAISGram::equalize()
+DAISGram DAISGram::equalize(DAISGram input)
 {
     DAISGram result;
     Tensor temp{data};
 
     for (int k = 0; k < data.depth(); k++)
     {
-        int histogram[256] = {}, cdf[256] = {};
-        float equalized[256] = {};
+        int histogram[256] = {0}, cdf[256] = {0};
+        float equalized[256] = {0};
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
@@ -317,12 +317,23 @@ DAISGram DAISGram::equalize()
         {
             for (int j = 0; j < data.cols(); j++)
             {
+                int val=equalized[(int)data(i, j, 0)];
+                int val1=equalized[(int)data(i, j, 1)];
+                int val2=equalized[(int)data(i, j, 2)];
+                int res=(int)input.data(i,j,0);
+                int res1=(int)input.data(i,j,1);
+                int res2=(int)input.data(i,j,2);
                 temp(i, j, k) = equalized[(int)data(i, j, k)];
             }
         }
     }
 
     result.data = temp;
+    if(input.data==result.data){
+        cout<<"sono uguali";
+    }else{
+        cout<<"sono diversi";
+    }
     return result;
 }
 
