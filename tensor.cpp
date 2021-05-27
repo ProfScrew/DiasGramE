@@ -428,6 +428,7 @@ Tensor Tensor::subset(unsigned int row_start, unsigned int row_end, unsigned int
 {
     if (row_start >= (unsigned int)r || row_end >= (unsigned int)r || col_start >= (unsigned int)c || col_end >= (unsigned int)c || depth_start >= (unsigned int)d || depth_end >= (unsigned int)d)
         throw dimension_mismatch();
+
     Tensor temp{(int)(row_end - row_start + 1), (int)(col_end - col_start + 1), (int)(depth_end - depth_start + 1), 0};
 
     /* Si procede ora con la copia */
