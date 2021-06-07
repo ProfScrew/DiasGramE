@@ -149,13 +149,14 @@ DAISGram DAISGram::sharpen()
 {
     DAISGram temp;
     Tensor filter{3, 3, 3, 0};
-    
-    for(int k = 0; k < data.depth(); k++){
-        filter(1,1,k) = 5;
-        filter(0,1,k) = -1;
-        filter(1,0,k) = -1;
-        filter(1,2,k) = -1;
-        filter(2,1,k) = -1;
+
+    for (int k = 0; k < data.depth(); k++)
+    {
+        filter(1, 1, k) = 5;
+        filter(0, 1, k) = -1;
+        filter(1, 0, k) = -1;
+        filter(1, 2, k) = -1;
+        filter(2, 1, k) = -1;
     }
     //filter.read_file("filter/sharp.txt");
     Tensor res;
@@ -173,19 +174,19 @@ DAISGram DAISGram::emboss()
 {
     DAISGram temp;
     Tensor filter{3, 3, 3, 0};
-    
-    for(int k = 0; k < data.depth(); k++){
-        filter(0,0,k) = -2;
 
-        filter(0,1,k) = -1;
-        filter(1,0,k) = -1;
+    for (int k = 0; k < data.depth(); k++)
+    {
+        filter(0, 0, k) = -2;
 
-        filter(1,1,k) = 1;
-        filter(2,1,k) = 1;
-        filter(1,2,k) = 1;
+        filter(0, 1, k) = -1;
+        filter(1, 0, k) = -1;
 
-        filter(2,2,k) = 2;
+        filter(1, 1, k) = 1;
+        filter(2, 1, k) = 1;
+        filter(1, 2, k) = 1;
 
+        filter(2, 2, k) = 2;
     }
     //filter.read_file("filter/emboss.txt");
     Tensor res;
@@ -207,10 +208,10 @@ DAISGram DAISGram::edge()
     temp = temp.grayscale();
 
     Tensor filter{3, 3, 3, -1};
-    
-    for(int k = 0; k < data.depth(); k++){
-        filter(1,1,k) = 8;
-        
+
+    for (int k = 0; k < data.depth(); k++)
+    {
+        filter(1, 1, k) = 8;
     }
     /*
     filter.read_file("filter/edge.txt");
@@ -275,7 +276,7 @@ DAISGram DAISGram::greenscreen(DAISGram &bkg, int rgb[], float threshold[])
             }
         }
     }
-    
+
     result.data = temp;
     return result;
 }
@@ -286,11 +287,12 @@ DAISGram DAISGram::equalize()
     Tensor temp{data};
 
     for (int k = 0; k < data.depth(); k++)
-    {   
+    {
         constexpr int size_color = 256;
         int histogram[size_color] = {0}, cdf[size_color] = {0};
         float equalized[size_color] = {0};
-        
+
+        /* INIZIALIZZAZIONE CELLE ISTOGRAMMA */
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
@@ -299,6 +301,7 @@ DAISGram DAISGram::equalize()
             }
         }
 
+        /* CALCOLO DEL CDF: LA FUNZIONE CUMULATIVA*/
         for (int i = 0; i < size_color; i++)
         {
             for (int j = 0; j <= i; j++)
@@ -307,6 +310,7 @@ DAISGram DAISGram::equalize()
             }
         }
 
+        /* CALCOLO DEL CDF_MIN */
         int cdf_min = 0;
         int index = 0;
         while (cdf_min == 0)
@@ -317,11 +321,13 @@ DAISGram DAISGram::equalize()
             index++;
         }
 
+        /* UTILIZZO FORMULA DEL PROFESSORE */
         for (int i = 0; i < size_color; i++)
         {
-            equalized[i] = (int)(((cdf[i] - cdf_min) / (float)(data.rows() * data.cols() - cdf_min)) * (size_color-1) );
+            equalized[i] = (int)(((cdf[i] - cdf_min) / (float)(data.rows() * data.cols() - cdf_min)) * (size_color - 1));
         }
 
+        /* TRASFORMAZIONE DA ISTOGRAMMA EQUALIZZATO A TENSORE*/
         for (int i = 0; i < data.rows(); i++)
         {
             for (int j = 0; j < data.cols(); j++)
