@@ -398,9 +398,15 @@ void Tensor::rescale(float new_max)
             for (int i = 0; i < r; i++)
             {
                 if (min != max)
+                {
                     matrix[i][j][k] = ((matrix[i][j][k] - min) / (max - min)) * new_max;
+                }
                 else
-                    matrix[i][j][k] = new_max;
+                {
+                    throw unknown_exception();
+                    /* ATTENZIONE DA RIVEDERE
+                    matrix[i][j][k] = new_max;*/
+                }
             }
         }
     }
