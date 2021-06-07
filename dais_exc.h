@@ -51,5 +51,11 @@ struct unable_to_write_file{
     string code = "009";  
 };
 
+struct unknown_exception{
+    string msg = "An error occured";
+    string code = "-1";   
+    /* Utilizzate questa eccezione per qualsiasi tipo di problema non gestito da altre eccezioni */
+};
+
 #endif
 
