@@ -403,9 +403,9 @@ void Tensor::rescale(float new_max)
                 }
                 else
                 {
-                    throw unknown_exception();
-                    /* ATTENZIONE DA RIVEDERE
-                    matrix[i][j][k] = new_max;*/
+                    //throw unknown_exception();
+
+                    matrix[i][j][k] = new_max;
                 }
             }
         }
@@ -695,7 +695,7 @@ void Tensor::write_file(string filename)
     ifile.open(filename);
     if (!ifile.is_open())
     {
-        throw unable_to_write_file();
+        throw unknown_operation();
     }
     ifile << to_string(r) << endl;
     ifile << to_string(c) << endl;
