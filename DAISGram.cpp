@@ -87,82 +87,57 @@ int DAISGram::getDepth()
 
 DAISGram DAISGram::brighten(float bright)
 {
-
-    DAISGram t;
-
+    DAISGram result;
     Tensor temp{data};
-
     temp = data + bright;
-
-    t.data = temp;
-
-    return t;
+    result.data = temp;
+    return result;
 }
 
 DAISGram DAISGram::grayscale()
 {
-
-    DAISGram t;
-    /*
-    Tensor res{data.rows(), data.cols(), 3, 0};
-
-    Tensor Ca{data}, Cb{data};
-    //  data        RGB       grb +
-    //    Ca          BRG
-    //    Cb          GBR
-
-
-    Ca.swap_channel(0, 1);
-    Ca.swap_channel(0, 2);
-
-    Cb.swap_channel(0, 1);
-    Cb.swap_channel(1, 2);
-    */
-
+    DAISGram result;
+    //  data                    RGB
+    //    temp fase 1           BRG
+    //    temp fase 2           GBR
     Tensor res{data}, temp{data};
     temp.swap_channel(0, 1);
     temp.swap_channel(0, 2);
     res = res + temp;
 
-    temp.swap_channel(1, 0);
-    temp.swap_channel(1, 2);
+    temp.swap_channel(0, 1);
+    temp.swap_channel(0, 2);
 
     res = res + temp;
     res = res / 3;
 
-
-
-    //res = (data + Ca + Cb) / 3;
-
-    t.data = res;
-    return t;
+    result.data = res;
+    return result;
 }
 
 DAISGram DAISGram::warhol()
 {
-    DAISGram t;
-    /*Tensor* top_right = new Tensor{data}; */
-    Tensor top_right{data};
+    DAISGram result;
+    Tensor top_res{data};
     Tensor bottom_left{data};
-    Tensor bottom_right{data};
+    Tensor bottom_right_res{data};
 
-    top_right.swap_channel(0, 1);    //RED WITH GREEN
-    bottom_left.swap_channel(1, 2);  //GREEN WITH BLUE
-    bottom_right.swap_channel(0, 2); //RED WITH BLUE
+    top_res.swap_channel(0, 1);          //RED WITH GREEN
+    bottom_left.swap_channel(1, 2);      //GREEN WITH BLUE
+    bottom_right_res.swap_channel(0, 2); //RED WITH BLUE
 
-    Tensor top_result = data.concat(top_right, 1);
-    Tensor bottom_result = bottom_left.concat(bottom_right, 1);
+    top_res = data.concat(top_res, 1);
+    bottom_right_res = bottom_left.concat(bottom_right_res, 1);
 
-    Tensor res = top_result.concat(bottom_result, 0);
+    bottom_right_res = top_res.concat(bottom_right_res, 0);
+    result.data = bottom_right_res;
 
-    t.data = res;
-
-    return t;
+    return result;
 }
 
 DAISGram DAISGram::sharpen()
 {
-    DAISGram temp;
+    DAISGram result;
     Tensor filter{3, 3, 3, 0};
 
     for (int k = 0; k < data.depth(); k++)
@@ -180,14 +155,14 @@ DAISGram DAISGram::sharpen()
 
     res = res.convolve(filter);
     res.clamp(0, 255);
-    temp.data = res;
+    result.data = res;
 
-    return temp;
+    return result;
 }
 
 DAISGram DAISGram::emboss()
 {
-    DAISGram temp;
+    DAISGram result;
     Tensor filter{3, 3, 3, 0};
 
     for (int k = 0; k < data.depth(); k++)
@@ -210,17 +185,17 @@ DAISGram DAISGram::emboss()
 
     res = res.convolve(filter);
     res.clamp(0, 255);
-    temp.data = res;
+    result.data = res;
 
-    return temp;
+    return result;
 }
 
 DAISGram DAISGram::edge()
 {
-    DAISGram temp;
-    temp.data = data;
+    DAISGram result;
+    result.data = data;
 
-    temp = temp.grayscale();
+    result = result.grayscale();
 
     Tensor filter{3, 3, 3, -1};
 
@@ -233,34 +208,33 @@ DAISGram DAISGram::edge()
     */
     Tensor res;
 
-    res = temp.data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
+    res = result.data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
 
     res = res.convolve(filter);
     res.clamp(0, 255);
-    temp.data = res;
+    result.data = res;
 
-    return temp;
+    return result;
 }
 
 DAISGram DAISGram::smooth(int h)
 {
-    DAISGram temp;
+    DAISGram result;
     Tensor filter{h, h, 3, (1 / ((float)h * (float)h))};
 
     Tensor res = data.padding((filter.rows() - 1) / 2, (filter.cols() - 1) / 2);
 
     res = res.convolve(filter);
     res.clamp(0, 255);
-    temp.data = res;
+    result.data = res;
 
-    return temp;
+    return result;
 }
 
 DAISGram DAISGram::blend(const DAISGram &rhs, float alpha)
 {
     DAISGram result;
     result.data = (data * alpha) + (rhs.data * (1 - alpha));
-
     return result;
 }
 
