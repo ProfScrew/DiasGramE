@@ -45,7 +45,7 @@ void DAISGram::load_image(string filename)
 
 /**
  * Save a DAISGram object to a bitmap file.
- * 
+ *
  * Data is clamped to 0,255 before saving it.
  *
  * @param filename String containing the path where to store the image.
@@ -103,21 +103,36 @@ DAISGram DAISGram::grayscale()
 {
 
     DAISGram t;
-
-    Tensor res{data.rows(), data.cols(), 1, 0};
+    /*
+    Tensor res{data.rows(), data.cols(), 3, 0};
 
     Tensor Ca{data}, Cb{data};
-    /*  data        RGB
-        Ca          BRG
-        Cb          GBR
-    */
+    //  data        RGB       grb +
+    //    Ca          BRG
+    //    Cb          GBR
+
+
     Ca.swap_channel(0, 1);
     Ca.swap_channel(0, 2);
 
     Cb.swap_channel(0, 1);
     Cb.swap_channel(1, 2);
+    */
 
-    res = (data + Ca + Cb) / 3;
+    Tensor res{data}, temp{data};
+    temp.swap_channel(0, 1);
+    temp.swap_channel(0, 2);
+    res = res + temp;
+
+    temp.swap_channel(1, 0);
+    temp.swap_channel(1, 2);
+
+    res = res + temp;
+    res = res / 3;
+
+
+
+    //res = (data + Ca + Cb) / 3;
 
     t.data = res;
     return t;
@@ -343,9 +358,9 @@ DAISGram DAISGram::equalize()
 
 /**
  * Generate Random Image
- * 
+ *
  * Generate a random image from nois
- * 
+ *
  * @param h height of the image
  * @param w width of the image
  * @param d number of channels
