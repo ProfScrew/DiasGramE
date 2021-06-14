@@ -313,7 +313,7 @@ DAISGram DAISGram::equalize()
         /* UTILIZZO FORMULA DEL PROFESSORE */
         for (int i = 0; i < size_color; i++)
         {
-            equalized[i] = (int)(((cdf[i] - cdf_min) / (float)(data.rows() * data.cols() - cdf_min)) * (size_color - 1));
+            equalized[i] = round(((cdf[i] - cdf_min) / (float)(data.rows() * data.cols() - cdf_min)) * (size_color - 1));
         }
 
         /* TRASFORMAZIONE DA ISTOGRAMMA EQUALIZZATO A TENSORE*/
