@@ -657,7 +657,7 @@ ostream &operator<<(ostream &stream, const Tensor &obj)
 void Tensor::read_file(string filename)
 {
     if (matrix != nullptr)
-        this->~Tensor();
+        this->~Tensor(); 
     ifstream ifile;
     ifile.open(filename, ios::in);
     if (!ifile.is_open())
